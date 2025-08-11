@@ -5,7 +5,6 @@ import ListMoviePage from "../pages/HomeTemplate/ListMoviePage";
 import LoginPage from "../pages/HomeTemplate/LoginPage";
 import MovieDetailsPage from "../pages/HomeTemplate/MovieDetailsPage";
 import NewsPage from "../pages/HomeTemplate/NewsPage";
-import RegisterPage from "../pages/HomeTemplate/RegisterPage";
 
 import ProtectedRoute from "./ProtectedRoute";
 import { Route } from "react-router-dom";
@@ -16,6 +15,8 @@ import AddUserPage from "../pages/AdminTemplate/AddUserPage";
 import AuthPage from "../pages/AdminTemplate/AuthPage";
 import Dashboard from "../pages/AdminTemplate/Dashboard";
 import MovieManagement from '../pages/AdminTemplate/MovieManagement';
+import UserManagement from "../pages/AdminTemplate/UserManagement";
+import RegisterUser from "../pages/HomeTemplate/ResisterUser";
 
 const routes = [
   {
@@ -48,7 +49,7 @@ const routes = [
       },
       {
         path: "register",
-        element: <RegisterPage />,
+        element: <RegisterUser />,
       },
     ],
   },
@@ -65,7 +66,7 @@ const routes = [
       element: <Dashboard />,
     },
     {
-      path: "add-user",
+      path: "user-management/add-user",
       element: <AddUserPage />,
     },
     {
@@ -75,6 +76,10 @@ const routes = [
     {
       path: "movies-management/add-movie",
       element: <AddMovie />,
+    },
+     {
+      path: "users-management",
+      element: <UserManagement />
     },
   ],
 },

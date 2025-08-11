@@ -5,7 +5,7 @@ import Movie from "./Movie";
 export default function ListMovieHomePage() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["list-movie"],
-    queryFn: () => getListMovieApi("GP02"),
+    queryFn: () => getListMovieApi("GP01"),
   });
 
   const handleRefetch = () => {

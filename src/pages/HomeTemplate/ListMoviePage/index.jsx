@@ -9,7 +9,7 @@ export default function ListMoviePage() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["list-movie"],
     queryFn: () => {
-      return getListMovieApi("GP02") // Trường h api chạy thành công thì hàm getListMovieApi trả về cái gì thì data trong useQuery sẽ nhận cái đó 
+      return getListMovieApi("GP01") // Trường h api chạy thành công thì hàm getListMovieApi trả về cái gì thì data trong useQuery sẽ nhận cái đó 
     },
   })
 

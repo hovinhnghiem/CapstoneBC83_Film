@@ -1,42 +1,46 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from "react-hook-form"
-import z from "zod"
-import api from "../../../services/api"
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from "react-hook-form";
+import z from "zod";
+import api from "../../../services/api";
 
+// Schema này khớp chính xác với JSON API bạn đã cung cấp
 const schema = z.object({
   taiKhoan: z.string().nonempty("Vui lòng nhập tài khoản"),
   matKhau: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
-  email: z.string().email("Email không hợp lệ"),
+  email: z.string().nonempty("Vui lòng nhập email").email("Email không hợp lệ"),
   soDt: z.string().nonempty("Vui lòng nhập số điện thoại"),
   maNhom: z.string().nonempty("Vui lòng nhập mã nhóm"),
   hoTen: z.string().nonempty("Vui lòng nhập họ tên")
-})
+});
 
-export default function RegisterUserPage() {
+export default function RegisterUser() {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: {
       taiKhoan: "",
       matKhau: "",
       email: "",
-      soDt: "",
-      maNhom: "",
+      soDt: "", // Đảm bảo tên trường là 'soDt'
+      maNhom: "", // THAY ĐỔI QUAN TRỌNG: Thử một mã nhóm khác, ví dụ GP01
       hoTen: ""
     },
     resolver: zodResolver(schema)
-  })
+  });
 
-  const errors = formState.errors
+  const { errors } = formState;
 
   const onSubmit = async (values) => {
     try {
-      const response = await api.post("/QuanLyNguoiDung/DangKy", values)
-      console.log("Đăng ký thành công:", response.data)
-      alert("Đăng ký thành công!")
+      // Dữ liệu 'values' gửi đi bây giờ hoàn toàn khớp với yêu cầu của API Đăng Ký
+      const response = await api.post("/QuanLyNguoiDung/DangKy", values);
+      console.log("Đăng ký thành công:", response.data);
+      alert("Đăng ký thành công!");
     } catch (error) {
-      console.error("Đăng ký thất bại:", error)
-      alert("Đăng ký thất bại. Vui lòng thử lại.")
+      // Cải thiện log lỗi để xem thông báo từ server
+      const errorMessage = error.response?.data?.content || error.message;
+      console.error("Đăng ký thất bại:", errorMessage);
+      alert(`Đăng ký thất bại: ${errorMessage}`);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -106,7 +110,6 @@ export default function RegisterUserPage() {
               type="text"
               {...register("maNhom")}
               className="mt-1 w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              
             />
             {errors.maNhom && <p className="text-red-500 text-sm">{errors.maNhom.message}</p>}
           </div>
@@ -120,5 +123,5 @@ export default function RegisterUserPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }
