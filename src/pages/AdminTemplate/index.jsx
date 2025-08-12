@@ -1,15 +1,17 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-
+import { useDispatch } from "react-redux";
+import { clearUser } from '../../store/auth.slice';
 export default function AdminTemplate() {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
-
+const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem('user')) || {};
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/');
+const handleLogout = () => {
+    localStorage.removeItem("user"); // Xóa thông tin user đã lưu
+    dispatch(clearUser()); // Reset Redux state
+    navigate("/login"); // Điều hướng về login
   };
 
   return (
@@ -42,7 +44,7 @@ export default function AdminTemplate() {
       </aside>
 
       {/* Top bar */}
-      <div className="flex justify-end items-center px-4 py-2 sm:ml-64 bg-white shadow">
+      <div className="flex justify-end items-center px-4 py-2 sm:ml-64 bg-[#98adcb]  shadow">
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}

@@ -70,7 +70,7 @@ export default function EditUser() {
       const payload = { ...values, maNhom: "GP00" };
       
 
-      await api.put("/QuanLyNguoiDung/CapNhatThongTinNguoiDung", payload);
+      await api.post("/QuanLyNguoiDung/CapNhatThongTinNguoiDung", payload);
       
       alert("Cập nhật thành công!");
       navigate("/admin/user-management");
