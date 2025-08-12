@@ -5,7 +5,7 @@ import ListMoviePage from "../pages/HomeTemplate/ListMoviePage";
 import LoginPage from "../pages/HomeTemplate/LoginPage";
 import MovieDetailsPage from "../pages/HomeTemplate/MovieDetailsPage";
 import NewsPage from "../pages/HomeTemplate/NewsPage";
-
+import EditUser from "../pages/AdminTemplate/EditUser";
 import ProtectedRoute from "./ProtectedRoute";
 import { Route } from "react-router-dom";
 
@@ -53,36 +53,41 @@ const routes = [
       },
     ],
   },
-{
-  path: "admin",
-  element: <ProtectedRoute><AdminTemplate /></ProtectedRoute>,
-  nested: [
-    {
-      index: true, // ✅ Thêm dòng này để khi vào /admin sẽ load Dashboard
-      element: <Dashboard />,
-    },
-    {
-      path: "dashboard",
-      element: <Dashboard />,
-    },
-    {
-      path: "user-management/add-user",
-      element: <AddUserPage />,
-    },
-    {
-      path: "movies-management",
-      element: <MovieManagement />,
-    },
-    {
-      path: "movies-management/add-movie",
-      element: <AddMovie />,
-    },
-     {
-      path: "users-management",
-      element: <UserManagement />
-    },
-  ],
-},
+  {
+    path: "admin",
+    element: <ProtectedRoute><AdminTemplate /></ProtectedRoute>,
+    nested: [
+      {
+        index: true, // ✅ Thêm dòng này để khi vào /admin sẽ load Dashboard
+        element: <Dashboard />,
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "user-management/add-user",
+        element: <AddUserPage />,
+      },
+      {
+        path: "movies-management",
+        element: <MovieManagement />,
+      },
+      {
+        path: "movies-management/add-movie",
+        element: <AddMovie />,
+      },
+      {
+        path: "users-management",
+        element: <UserManagement />
+      },
+      {
+        path: "users-management/edit/:taiKhoan",
+        element: <EditUser />
+      },
+
+    ],
+  },
   {
     path: "auth",
     element: <AuthPage />,

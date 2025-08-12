@@ -25,7 +25,7 @@ export default function AddMovie() {
       tenPhim: "",
       trailer: "",
       moTa: "",
-      maNhom: "GP01",
+      maNhom: "",
       ngayKhoiChieu: "",
       trangThai: false,
       // SapChieu: false,

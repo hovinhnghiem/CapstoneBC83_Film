@@ -14,7 +14,7 @@ export default function MovieManagement() {
   useEffect(() => {
     const getMovies = async () => {
       try {
-        const response = await api.get('/QuanLyPhim/LayDanhSachPhimPhanTrang?maNhom=GP02&soTrang=1&soPhanTuTrenTrang=100')
+        const response = await api.get('/QuanLyPhim/LayDanhSachPhimPhanTrang?maNhom=GP01&soTrang=1&soPhanTuTrenTrang=100')
         //  console.log('🔥 ~ getMovies ~ response:', response)
         setMovies(response.data.content.items || [])
       } catch (error) {

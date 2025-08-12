@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from "../../../services/api"
+import DeleteUser from '../DeleteUser'
+import FindUser from "../FindUser";
+
 
 export default function UserManagement() {
 
   const navigate = useNavigate()
   const [users, setUsers] = useState([])
-//   const [loading, setLoading] = useState(false)
-//   const [error, setError] = useState(null)
+  //   const [loading, setLoading] = useState(false)
+  //   const [error, setError] = useState(null)
   console.log('🔥 ~ MovieManagement ~ movies:', users)
 
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const response = await api.get('/QuanLyNguoiDung/LayDanhSachNguoiDung?MaNhom=GP01&soTrang=1&soPhanTuTrenTrang=100')
+        const response = await api.get('/QuanLyNguoiDung/LayDanhSachNguoiDung?MaNhom=GP00&soTrang=1&soPhanTuTrenTrang=100')
         setUsers(response.data.content || []);
       } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
@@ -22,10 +25,13 @@ export default function UserManagement() {
     getUsers()
   }, [])
 
-  const  handleAddMovie = ()=>{
-    navigate("/admin/user-management/add-user")
+  const handleAddMovie = () => {
+    navigate("/admin/users-management/add-user")
   }
 
+  const handleSearchResult = (data) => {
+    setUsers(data || []);
+  };
   return (
     <div className='space-y-4'>
       <nav className="flex" aria-label="Breadcrumb">
@@ -52,6 +58,10 @@ export default function UserManagement() {
 
       <div className='flex items-center justify-between'>
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">User Management</h1>
+        {/* Thanh tìm kiếm */}
+        <FindUser onSearchResult={handleSearchResult} />
+
+
 
         <button className="px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-offset-gray-800" onClick={handleAddMovie}>
           Add user
@@ -64,6 +74,9 @@ export default function UserManagement() {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">
+                STT
+              </th>
+              <th scope="col" className="px-6 py-3">
                 Tài khoản
               </th>
               <th scope="col" className="px-6 py-3">
@@ -72,18 +85,24 @@ export default function UserManagement() {
               <th scope="col" className="px-6 py-3">
                 Email
               </th>
-            
+
               <th scope="col" className="px-6 py-3">
                 Số điện thoại
               </th>
               <th scope="col" className="px-6 py-3">
                 Loại người dùng
               </th>
+              <th scope="col" className="px-6 py-3">
+                Services
+              </th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {users.map((user, index) => (
               <tr key={user.taiKhoan} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                <th scope="row" className="px-6 py-4 font-medium text-gray-900  dark:text-white w-[250px]">
+                  {index + 1}
+                </th>
                 <th scope="row" className="px-6 py-4 font-medium text-gray-900  dark:text-white w-[250px]">
                   {user.taiKhoan}
                 </th>
@@ -93,12 +112,26 @@ export default function UserManagement() {
                 <td className="px-6 flex-col justify-center items-start py-4">
                   <p className='w-[320px] line-clamp-2'>{user.email}</p>
                 </td>
-              
+
                 <td className="px-6 py-4">
                   {user.soDT}
                 </td>
                 <td className="px-6 py-4">
                   {user.maLoaiNguoiDung} {/**? 'QuanTri' : 'KhachHang' */}
+                </td>
+                <td className="px-6 py-4 flex gap-2">
+                  <button
+                  onClick={() => navigate(`/admin/users-management/edit/${user.taiKhoan}`)}
+                  className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                >
+                  Edit
+                </button>
+                  <DeleteUser
+                    taiKhoan={user.taiKhoan}
+                    onDeleted={(deletedAccount) =>
+                      setUsers((prev) => prev.filter((u) => u.taiKhoan !== deletedAccount))
+                    }
+                  />
                 </td>
               </tr>
             ))}
