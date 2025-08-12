@@ -21,7 +21,7 @@ export default function HomePage() {
         <div className="flex justify-center mt-6">
           <button
             onClick={() => navigate("/list-movie")}
-            className="px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition"
+            className="px-5 py-2 bg-blue-500 mb-10 hover:bg-blue-600 text-white rounded transition"
           >
             Xem thêm
           </button>

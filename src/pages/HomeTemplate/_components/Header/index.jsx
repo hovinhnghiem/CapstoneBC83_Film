@@ -19,32 +19,38 @@ export default function Header() {
 
   // Xử lý logout
   const handleLogout = () => {
-    localStorage.removeItem("user"); // Xóa user trong localStorage
-    dispatch(clearUser()); // Xóa user trong Redux
-    navigate("/login"); // Điều hướng về login
+    localStorage.removeItem("user"); 
+    dispatch(clearUser()); 
+    navigate("/login"); 
   };
 
+  // Class NavLink tùy active
+  const linkClass = ({ isActive }) =>
+    isActive
+      ? "text-red-500 font-semibold" // Màu đỏ khi active
+      : "text-white hover:text-red-400"; // Màu trắng khi bình thường
+
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700">
+    <nav className="fixed top-0 left-0 w-full z-50 border-b bg-gray-900 shadow-2xl">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="/logo.jpeg" className="h-8" alt="Flowbite Logo" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+          <span className="self-center text-2xl font-semibold whitespace-nowra text-white">
             Vinh Nghiem Cinema
           </span>
         </a>
 
         <div className="hidden w-full md:block md:w-auto" id="navbar-default">
           <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 
-              border border-gray-100 rounded-lg bg-gray-50 
+              border rounded-lg
               md:flex-row md:items-center md:space-x-8 rtl:space-x-reverse 
-              md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 
-              md:dark:bg-gray-900 dark:border-gray-700">
+              md:mt-0 md:border-0
+               dark:border-gray-700">
             
-            <li><NavLink to="/">Home</NavLink></li>
-            <li><NavLink to="/about">About</NavLink></li>
-            <li><NavLink to="/list-movie">List Movie</NavLink></li>
-            <li><NavLink to="/news">News</NavLink></li>
+            <li><NavLink to="/" className={linkClass}>Home</NavLink></li>
+            <li><NavLink to="/about" className={linkClass}>About</NavLink></li>
+            <li><NavLink to="/list-movie" className={linkClass}>List Movie</NavLink></li>
+            <li><NavLink to="/news" className={linkClass}>News</NavLink></li>
 
             {user ? (
               <li className="relative">
@@ -52,7 +58,7 @@ export default function Header() {
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center space-x-2 focus:outline-none"
                 >
-                  <span className="text-gray-900 dark:text-white">
+                  <span className="text-white">
                     Chào, {user.taiKhoan}!
                   </span>
                   <img
@@ -87,8 +93,8 @@ export default function Header() {
               </li>
             ) : (
               <>
-                <li><NavLink to="/login">Login</NavLink></li>
-                <li><NavLink to="/register">Register</NavLink></li>
+                <li><NavLink to="/login" className={linkClass}>Login</NavLink></li>
+                <li><NavLink to="/register" className={linkClass}>Register</NavLink></li>
               </>
             )}
           </ul>
