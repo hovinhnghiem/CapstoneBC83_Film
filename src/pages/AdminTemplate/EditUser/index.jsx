@@ -1,12 +1,10 @@
-// AdminTemplate/EditUser/index.jsx
-
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../services/api";
-import { useSelector } from "react-redux"; // 1. Import useSelector để lấy user từ store
+import { useSelector } from "react-redux"; 
 
 // Schema để xác thực dữ liệu form
 const schema = z.object({
@@ -37,7 +35,7 @@ export default function EditUser() {
     resolver: zodResolver(schema),
   });
 
-  // Lấy thông tin user cần sửa khi component được mount
+
   useEffect(() => {
     if (taiKhoan) {
       const fetchUser = async () => {
@@ -63,10 +61,9 @@ export default function EditUser() {
 
   // Hàm xử lý khi submit form
   const onSubmit = async (values) => {
-    // 3. Kiểm tra quyền của admin trước khi gửi yêu cầu
     if (adminUser?.maLoaiNguoiDung !== "QuanTri") {
       alert("Bạn không có quyền thực hiện hành động này!");
-      return; // Dừng hàm nếu không có quyền
+      return; 
     }
 
     try {
