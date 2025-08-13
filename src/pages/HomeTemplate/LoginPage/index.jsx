@@ -1,77 +1,60 @@
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-import { useDispatch } from 'react-redux';
-import { loginApi } from '../../../services/auth.api';
-import { setUser } from '../../../store/auth.slice';
+import { loginApi } from "../../../services/auth.api";
+import { setUser } from "../../../store/auth.slice";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
-
-  const { mutate: handleLogin, isPending } = useMutation({
-    mutationFn: (valuesNhanTuHandleLogin) => loginApi(valuesNhanTuHandleLogin),
-    onSuccess: (user) => {
-      if (!user) return // Nếu không có user sẽ không làm gì hết
-      localStorage.setItem("user", JSON.stringify(user)); // Lưu local storage
-      dispatch(setUser(user)) // Lưu lên store để chia sẽ dữ liệu với các component khác 
-      
-      navigate(user.maLoaiNguoiDung === "QuanTri" ? "/admin/dashboard" : "/")
-    },
-    onError: () => {
-      alert("Login failed")
-    }
-  })
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.authSlice.user);
 
   const [values, setValues] = useState({
     taiKhoan: "",
     matKhau: "",
   });
 
-  const handleOnchange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+  // Nếu đã login → tự redirect
+  useEffect(() => {
+    if (user) {
+      if (user.maLoaiNguoiDung === "QuanTri") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [user, navigate]);
+
+  const { mutate: handleLogin, isPending } = useMutation({
+    mutationFn: loginApi,
+    onSuccess: (userData) => {
+      if (!userData) return;
+      localStorage.setItem("user", JSON.stringify(userData));
+      dispatch(setUser(userData));
+      if (userData.maLoaiNguoiDung === "QuanTri") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
+    },
+    onError: () => {
+      alert("Sai tài khoản hoặc mật khẩu!");
+    },
+  });
+
+  const handleOnChange = (e) => {
+    setValues((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    handleLogin(values)
-    // try {
-    //   const response = await api.post("/QuanLyNguoiDung/DangNhap", values);
-    //   console.log("⚡️ ~ handleSubmit ~ response:", response);
-    //   const user = response.data.content;
-    // if (user) {
-    //   localStorage.setItem("user", JSON.stringify(user));
-    //   if (user.maLoaiNguoiDung === "QuanTri") {
-    //     navigate("/admin/dashboard");
-    //   } else {
-    //     navigate("/");
-    //   }
-    // }
-    // } catch (error) {
-    //   console.log("⚡️ ~ handleSubmit ~ error:", error);
-    // }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleLogin(values);
   };
-
-  // useEffect(() => {
-  //   const user = JSON.parse(localStorage.getItem("user"));
-  //   if (user && user.maLoaiNguoiDung === "QuanTri") {
-  //     return <Navigate to="/admin/dashboard" />;
-  //   }
-  //   if (user && user.maLoaiNguoiDung !== "QuanTri") {
-  //     return <Navigate to="/" />;
-  //   }
-  // }, []);
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user && user.maLoaiNguoiDung === "QuanTri") {
-    return <Navigate to="/admin/dashboard" />;
-  }
-  if (user && user.maLoaiNguoiDung !== "QuanTri") {
-    return <Navigate to="/" />;
-  }
 
   return (
     <div className="container mx-auto min-h-screen flex flex-col items-center justify-center">
@@ -81,7 +64,7 @@ export default function LoginPage() {
           placeholder="Tài khoản"
           className="p-3 rounded-lg border w-full"
           name="taiKhoan"
-          onChange={handleOnchange}
+          onChange={handleOnChange}
           value={values.taiKhoan}
         />
         <input
@@ -89,13 +72,17 @@ export default function LoginPage() {
           type="password"
           className="p-3 rounded-lg border w-full"
           name="matKhau"
-          onChange={handleOnchange}
+          onChange={handleOnChange}
           value={values.matKhau}
         />
         <div className="flex justify-end">
           <button
+            type="submit"
             disabled={isPending}
-            className="p-3 bg-green-600 text-white rounded-lg">{isPending ? "Đang đăng nhập..." : "Đăng nhập"} </button>
+            className="p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-60"
+          >
+            {isPending ? "Đang đăng nhập..." : "Đăng nhập"}
+          </button>
         </div>
       </form>
     </div>

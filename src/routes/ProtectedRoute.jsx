@@ -1,13 +1,21 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 
 export default function ProtectedRoute({ children }) {
-  const isAuthenticated = !!localStorage.getItem("user");
-  const location = useLocation();
+  // Lấy user từ Redux hoặc localStorage
+  const user = useSelector((state) => state.authSlice.user) 
+    || JSON.parse(localStorage.getItem("user"));
 
-  // Chỉ redirect nếu đang cố vào /admin nhưng chưa login
-  if (!isAuthenticated && location.pathname.startsWith("/admin")) {
-    return <Navigate to="/login/" replace />;
+  if (!user) {
+    // Chưa đăng nhập → về trang login
+    return <Navigate to="/login" replace />;
   }
 
+  if (user.maLoaiNguoiDung !== "QuanTri") {
+    // Không phải quản trị → về trang chủ hoặc báo lỗi
+    return <Navigate to="/" replace />;
+  }
+
+  // Nếu pass hết → render nội dung
   return children;
 }

@@ -23,6 +23,11 @@ const handleLogout = () => {
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-[#202a37] ">
+          <li>
+              <Link to="/admin/dashboard" className="flex items-center p-2 text-white hover:text-red-500  rounded-lg">
+                Dashboard
+              </Link>
+            </li>
           <ul className="space-y-2 font-medium">
             <li>
               <Link to="/admin/movies-management" className="flex items-center p-2 text-white hover:text-red-500  rounded-lg">
