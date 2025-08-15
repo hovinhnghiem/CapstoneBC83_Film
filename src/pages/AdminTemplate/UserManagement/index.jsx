@@ -57,7 +57,7 @@ export default function UserManagement() {
       </nav>
 
       <div className='flex items-center justify-between'>
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">User Management</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">User Management</h1>
         {/* Thanh tìm kiếm */}
         <FindUser onSearchResult={handleSearchResult} />
 

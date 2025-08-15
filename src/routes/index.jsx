@@ -17,6 +17,7 @@ import Dashboard from "../pages/AdminTemplate/Dashboard";
 import MovieManagement from '../pages/AdminTemplate/MovieManagement';
 import UserManagement from "../pages/AdminTemplate/UserManagement";
 import RegisterUser from "../pages/HomeTemplate/ResisterUser";
+import SetCalendarFilm from "../pages/AdminTemplate/SetCalendarFilm";
 
 const routes = [
   {
@@ -84,6 +85,10 @@ const routes = [
       {
         path: "users-management/edit/:taiKhoan",
         element: <EditUser />
+      }, 
+      {
+        path: "movies-management/setcalendar/:maPhim",
+        element: <SetCalendarFilm />
       },
 
     ],

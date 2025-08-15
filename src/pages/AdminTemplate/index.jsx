@@ -23,12 +23,13 @@ const handleLogout = () => {
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-[#202a37] ">
-          <li>
+          
+          <ul className="space-y-2 font-medium">
+            <li>
               <Link to="/admin/dashboard" className="flex items-center p-2 text-white hover:text-red-500  rounded-lg">
                 Dashboard
               </Link>
             </li>
-          <ul className="space-y-2 font-medium">
             <li>
               <Link to="/admin/movies-management" className="flex items-center p-2 text-white hover:text-red-500  rounded-lg">
                 Quản lý Phim
@@ -49,7 +50,7 @@ const handleLogout = () => {
       </aside>
 
       {/* Top bar */}
-      <div className="flex justify-end items-center px-4 py-2 sm:ml-64 bg-[#98adcb]  shadow">
+      <div className="flex text justify-end items-center px-4 py-2 sm:ml-64 bg-gradient-to-r from-blue-600 to-purple-600 shadow">
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
