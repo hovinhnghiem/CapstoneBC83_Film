@@ -19,9 +19,9 @@ export default function Header() {
 
   // Xử lý logout
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    dispatch(clearUser());
-    navigate("/login");
+    localStorage.removeItem("user"); 
+    dispatch(clearUser()); 
+    navigate("/login"); 
   };
 
   // Class NavLink tùy active
@@ -46,7 +46,7 @@ export default function Header() {
               md:flex-row md:items-center md:space-x-8 rtl:space-x-reverse 
               md:mt-0 md:border-0
                dark:border-gray-700">
-
+            
             <li><NavLink to="/" className={linkClass}>Home</NavLink></li>
             <li><NavLink to="/about" className={linkClass}>About</NavLink></li>
             <li><NavLink to="/list-movie" className={linkClass}>List Movie</NavLink></li>

@@ -41,7 +41,7 @@ const handleLogout = () => {
               </Link>
             </li>
             <li>
-              <Link to="/admin/movies-theater" className="flex items-center p-2 text-white hover:text-red-500  rounded-lg">
+              <Link to="/admin/" className="flex items-center p-2 text-white hover:text-red-500  rounded-lg">
                 Quản lý hệ thống rạp chiếu
               </Link>
             </li>
@@ -75,7 +75,7 @@ const handleLogout = () => {
           {showMenu && (
             <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50">
               <button
-                onClick={() => navigate('/admin/update-profile')}
+                onClick={() => navigate('/update-info')}
                 className="block px-4 py-2 w-full text-left hover:bg-blue-200"
               >
                 Cập nhật thông tin

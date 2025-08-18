@@ -1,0 +1,60 @@
+.carousel-container {
+  margin: 60px 0;
+}
+
+.slick-slide img {
+  width: 100%;
+  height: 700px;
+  object-fit: cover; /* Giữ nguyên tỉ lệ ảnh, không cắt */
+  background-color: #000; /* Thêm nền đen để lấp khoảng trống */
+}
+
+.slick-prev:before, .slick-next:before {
+  color: #333;
+  font-size: 20px;
+}
+
+.slick-prev {
+  left: 25px;
+  z-index: 1;
+}
+
+.slick-next {
+  right: 25px;
+  z-index: 1;
+}
+
+.slide-content {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.slide-content h3 {
+  margin: 0 0 10px 0;
+  font-size: 24px;
+}
+
+.slide-content p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.slick-dots {
+  bottom: 25px;
+}
+
+.slick-dots li button:before {
+  color: white;
+  font-size: 12px;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #007bff;
+}
+
+

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { data, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import api from "../../../services/api"
 import DeleteUser from '../DeleteUser'
 import FindUser from "../FindUser";
@@ -32,9 +32,6 @@ export default function UserManagement() {
   const handleSearchResult = (data) => {
     setUsers(data || []);
   };
-
- 
-
   return (
     <div className='space-y-4'>
       <nav className="flex" aria-label="Breadcrumb">
@@ -66,7 +63,7 @@ export default function UserManagement() {
 
 
 
-        <button  className="px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-offset-gray-800" onClick={handleAddMovie}>
+        <button className="px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-offset-gray-800" onClick={handleAddMovie}>
           Add user
         </button>
 

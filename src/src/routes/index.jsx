@@ -18,11 +18,7 @@ import MovieManagement from '../pages/AdminTemplate/MovieManagement';
 import UserManagement from "../pages/AdminTemplate/UserManagement";
 import RegisterUser from "../pages/HomeTemplate/ResisterUser";
 import SetCalendarFilm from "../pages/AdminTemplate/SetCalendarFilm";
-import MovieTheater from "../pages/AdminTemplate/MovieTheater";
-import UpdateProfileAdmin from "../pages/AdminTemplate/UpdateProfileAdmin";
-import AddUserFromAdmin from "../pages/AdminTemplate/AddUserFromAdmin";
-import BuyTicket from "../pages/HomeTemplate/BuyTicket";
-import TicketManagement from "../pages/HomeTemplate/TickerManagement";
+
 const routes = [
   {
     path: "",
@@ -56,15 +52,6 @@ const routes = [
         path: "register",
         element: <RegisterUser />,
       },
-      {
-        path: "/buy-ticket/:maLichChieu",
-        element: <BuyTicket />
-      },
-      {
-        path: "/ticket-management",
-        element: <TicketManagement />
-      }
-    
     ],
   },
   {
@@ -103,18 +90,6 @@ const routes = [
         path: "movies-management/setcalendar/:maPhim",
         element: <SetCalendarFilm />
       },
-      {
-        path: "movies-theater",
-        element: <MovieTheater />
-      },
-      {
-        path: "update-profile",
-        element: <UpdateProfileAdmin />
-      },
-      {
-        path: "users-management/add-user-admin",
-        element: <AddUserFromAdmin />
-      }
 
     ],
   },

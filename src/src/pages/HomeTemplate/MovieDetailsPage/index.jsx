@@ -4,21 +4,20 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { getMovieDetailsApi } from '../../../services/movie.api';
 import api from '../../../services/api';
-import { useSelector } from "react-redux";
 
 export default function MovieDetailsPage() {
   const { movieId } = useParams();
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(0);
-   const { user } = useSelector((state) => state.authSlice);
-
+  
+  // Giữ nguyên useQuery từ code cũ
   const { data: movie, isLoading, isError } = useQuery({
     queryKey: ["movie-details", movieId],
     queryFn: () => getMovieDetailsApi(movieId),
     enabled: !!movieId
   });
 
-
+  // Thêm API call để lấy lịch chiếu phim
   const { data: lichChieuData, isLoading: isLoadingLichChieu } = useQuery({
     queryKey: ["lich-chieu", movieId],
     queryFn: async () => {
@@ -52,13 +51,8 @@ export default function MovieDetailsPage() {
 
   const dates = generateDates();
 
- const handleBooking = (maLichChieu) => {
-    if (!user) {
-      alert("Vui lòng đăng nhập để đặt vé!");
-      navigate("/login");
-      return;
-    }
-    navigate(`/buy-ticket/${maLichChieu}`);
+  const handleBooking = (maLichChieu) => {
+    navigate(`/booking/${maLichChieu}`);
   };
 
   const formatPrice = (price) => {
@@ -73,7 +67,7 @@ export default function MovieDetailsPage() {
     return format(new Date(dateTimeString), 'HH:mm');
   };
 
-
+  // Render logic giữ nguyên từ code cũ
   if (isLoading || isLoadingLichChieu) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-600"></div>
@@ -86,7 +80,7 @@ export default function MovieDetailsPage() {
     </div>
   );
 
-
+  // Sử dụng data thật từ API thay vì mock data
   const cinemaSchedule = lichChieuData?.heThongRapChieu || [];
 
   return (
@@ -162,11 +156,11 @@ export default function MovieDetailsPage() {
             ))}
           </div>
 
-
+          {/* Cinema Schedule từ API thật */}
           <div className="space-y-6">
             {cinemaSchedule.map((heThongRap, cumRapIndex) => (
               <div key={cumRapIndex} className="border border-gray-700 rounded-xl overflow-hidden">
-   
+                {/* Cinema Chain Header */}
                 <div className="bg-gray-700 px-6 py-4">
                   <h3 className="text-xl font-bold text-white flex items-center">
                     <img src={heThongRap.logo} alt={heThongRap.tenHeThongRap} className="w-8 h-8 mr-3" />
