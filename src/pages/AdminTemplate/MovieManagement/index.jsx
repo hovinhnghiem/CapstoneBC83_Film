@@ -25,9 +25,6 @@ export default function MovieManagement() {
     navigate("/admin/movies-management/add-movie")
   }
 
-  const handleEdit = (maPhim) => {
-    navigate(`/admin/movies-management/edit/${maPhim}`)
-  }
   const handleSetCalendar = (movie) => {
     navigate(`/admin/movies-management/setcalendar/${movie.maPhim}`);
   };
@@ -69,8 +66,8 @@ export default function MovieManagement() {
 
       {/* Table */}
       <div className="relative overflow-x-auto">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+        <table className="w-full text-sm text-left text-white dark:text-gray-400">
+          <thead className="text-xs text-white uppercase bg-gradient-to-r from-blue-600 to-purple-600 shadow">
             <tr>
               <th className="px-6 py-3">Movie name</th>
               <th className="px-6 py-3">Image</th>
@@ -82,7 +79,7 @@ export default function MovieManagement() {
           </thead>
           <tbody>
             {movies.map((movie) => (
-              <tr key={movie.maPhim} className="border border-gray-200 shadow">
+              <tr key={movie.maPhim} className="border border-gray-200 shadow-xl">
                 <td className="px-6 py-4 font-medium text-gray-900 w-[250px]">{movie.tenPhim}</td>
                 <td className="px-6 py-4">
                   <img src={movie.hinhAnh} alt={movie.tenPhim} className="w-24 h-32 object-cover" />
@@ -93,7 +90,7 @@ export default function MovieManagement() {
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-center space-x-3">
                     <button
-                      onClick={() => navigate(`/admin/movies-management/edit/${movie.maPhim}`)}
+                      onClick={() => navigate(`/admin/movies-management/edit-movie/${movie.maPhim}`)}
                       className="text-blue-500 hover:text-blue-700"
                     >
                       <FaEdit size={18} />
@@ -104,12 +101,12 @@ export default function MovieManagement() {
                         setMovies((prev) => prev.filter((m) => m.maPhim !== deletedId))
                       }
                     />
-<button
-  onClick={() => handleSetCalendar(movie)}
-  className="text-green-500 hover:text-green-700"
->
-  <FaRegCalendarAlt size={18} />
-</button>
+                    <button
+                      onClick={() => handleSetCalendar(movie)}
+                      className="text-green-500 hover:text-green-700"
+                    >
+                      <FaRegCalendarAlt size={18} />
+                    </button>
                   </div>
                 </td>
               </tr>

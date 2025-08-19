@@ -37,14 +37,10 @@ export default function Footer() {
         {/* Cột 4 - Liên hệ */}
         <div>
           <h3 className="text-white font-semibold mb-4">Liên hệ</h3>
-          <p>📍 123 Đường ABC, TP.HCM</p>
-          <p>📞 0123 456 789</p>
+          <p>📍 112 Cao Thắng, Phường 4, Quận 3, Hồ Chí Minh</p>
+          <p>📞 0888 629 615</p>
           <p>📧 info@vinhnghiemcinema.com</p>
-          <div className="flex space-x-3 mt-3">
-            <a href="#"><img src="/icons/facebook.svg" alt="fb" className="w-6" /></a>
-            <a href="#"><img src="/icons/youtube.svg" alt="yt" className="w-6" /></a>
-            <a href="#"><img src="/icons/instagram.svg" alt="ig" className="w-6" /></a>
-          </div>
+          
         </div>
       </div>
 

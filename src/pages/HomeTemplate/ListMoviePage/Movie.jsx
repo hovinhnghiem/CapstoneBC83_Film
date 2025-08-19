@@ -7,9 +7,6 @@ export default function Movie({ movie }) {
     navigate(`/movie-details/${movie.maPhim}`);
   };
 
-  const handleBooking = () => {
-    navigate(`/booking/${movie.maPhim}`);
-  };
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden flex flex-col hover:shadow-lg transition duration-300 group">
@@ -38,7 +35,7 @@ export default function Movie({ movie }) {
             Chi tiết
           </button>
           <button
-            onClick={handleBooking}
+            onClick={handleViewDetails}
             className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded transition"
           >
             Đặt vé

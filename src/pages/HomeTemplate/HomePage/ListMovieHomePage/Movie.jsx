@@ -38,7 +38,7 @@ export default function HomeMovie({ movie }) {
             Chi tiết
           </button>
           <button
-            onClick={handleBooking}
+            onClick={handleViewDetails}
             className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded transition"
           >
             Đặt vé

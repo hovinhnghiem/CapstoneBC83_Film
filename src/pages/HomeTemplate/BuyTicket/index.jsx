@@ -16,7 +16,57 @@ export default function BuyTicket() {
     const fetchData = async () => {
       try {
         const res = await api.get(`/QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=${maLichChieu}`);
-        setDanhSachGhe(res.data.content.danhSachGhe);
+        
+        const originalSeats = res.data.content.danhSachGhe;
+        const totalSeats = originalSeats.length;
+        const seatsPerRow = 12;
+        const totalRows = Math.ceil(totalSeats / seatsPerRow);
+        
+        // Phân loại ghế
+        const vipSeats = originalSeats.filter(seat => seat.loaiGhe === "Vip");
+        const normalSeats = originalSeats.filter(seat => seat.loaiGhe !== "Vip");
+        
+        // Tạo ma trận ghế với layout cân đối
+        const seatMatrix = Array(totalRows).fill(null).map(() => Array(seatsPerRow).fill(null));
+        
+        let vipIndex = 0;
+        let normalIndex = 0;
+        
+        // Định nghĩa khu vực VIP cân đối hơn (trung tâm rạp)
+        const vipRows = [
+          Math.floor(totalRows * 0.3), // Bắt đầu từ 30% chiều cao rạp
+          Math.floor(totalRows * 0.7)  // Kết thúc ở 70% chiều cao rạp
+        ];
+        
+        // Đặt ghế theo từng hàng để tạo sự cân đối
+        for (let row = 0; row < totalRows; row++) {
+          for (let col = 0; col < seatsPerRow; col++) {
+            // Khu vực VIP: trung tâm theo chiều dọc và ngang
+            const isVipRow = row >= vipRows[0] && row <= vipRows[1];
+            const isVipCol = col >= 2 && col <= 9; // Trung tâm theo chiều ngang
+            const isVipPosition = isVipRow && isVipCol;
+            
+            if (isVipPosition && vipIndex < vipSeats.length) {
+              seatMatrix[row][col] = vipSeats[vipIndex];
+              vipIndex++;
+            } else if (normalIndex < normalSeats.length) {
+              seatMatrix[row][col] = normalSeats[normalIndex];
+              normalIndex++;
+            }
+          }
+        }
+        
+        // Chuyển matrix thành array 1 chiều, loại bỏ null
+        const finalSeats = [];
+        for (let row = 0; row < totalRows; row++) {
+          for (let col = 0; col < seatsPerRow; col++) {
+            if (seatMatrix[row][col] !== null) {
+              finalSeats.push(seatMatrix[row][col]);
+            }
+          }
+        }
+        
+        setDanhSachGhe(finalSeats);
         setThongTinPhim(res.data.content.thongTinPhim);
       } catch (err) {
         console.error(err);
@@ -65,7 +115,7 @@ export default function BuyTicket() {
   };
 
   return (
-    <div className="min-h-screen mt-16 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
           
@@ -89,44 +139,100 @@ export default function BuyTicket() {
             </div>
 
             {/* Sơ đồ ghế */}
-            <div className="grid grid-cols-12 gap-3 mb-8 justify-center">
-              {danhSachGhe.map((ghe) => {
-                const isSelected = gheDangChon.some((g) => g.maGhe === ghe.maGhe);
-                return (
-                  <button
-                    key={ghe.maGhe}
-                    onClick={() => handleChonGhe(ghe)}
-                    className={`
-                      w-10 h-10 rounded-xl font-semibold text-xs transition-all duration-300 transform hover:scale-110 shadow-lg
-                      ${ghe.daDat 
-                        ? "bg-red-500/80 text-white cursor-not-allowed shadow-red-500/50" 
-                        : ""}
-                      ${isSelected 
-                        ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-green-500/50 scale-110" 
-                        : ""}
-                      ${!ghe.daDat && !isSelected 
-                        ? "bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white shadow-blue-500/50" 
-                        : ""}
-                    `}
-                  >
-                    {ghe.tenGhe}
-                  </button>
-                );
-              })}
+            <div className="relative">
+              {/* Multiple VIP zones highlight */}
+              <div className="absolute inset-0 pointer-events-none z-0">
+                {/* VIP Zone 1 - Center area */}
+                <div 
+                  className="absolute bg-gradient-to-r from-yellow-500/15 to-orange-500/15 border border-yellow-400/30 rounded-xl backdrop-blur-sm"
+                  style={{
+                    left: `calc(${(2/12) * 100}% - 4px)`,
+                    top: `calc(30% - 4px)`,
+                    width: `calc(${(8/12) * 100}% + 8px)`,
+                    height: `calc(40% + 8px)`
+                  }}
+                />
+                
+              </div>
+              
+              {/* Grid ghế */}
+              <div className="grid gap-2 justify-center relative z-10 pt-12" 
+                   style={{ 
+                     gridTemplateColumns: 'repeat(12, minmax(0, 1fr))',
+                     maxWidth: '600px',
+                     margin: '0 auto'
+                   }}>
+                {danhSachGhe.map((ghe, index) => {
+                  const isSelected = gheDangChon.some((g) => g.maGhe === ghe.maGhe);
+                  const isVipSeat = ghe.loaiGhe === "Vip";
+                  
+                  // Tạo khoảng cách giữa các khu vực để dễ nhìn
+                  const row = Math.floor(index / 12);
+                  const col = index % 12;
+                  const isAisle = col === 2 || col === 9; // Lối đi
+                  
+                  return (
+                    <button
+                      key={ghe.maGhe}
+                      onClick={() => handleChonGhe(ghe)}
+                      className={`
+                        w-9 h-9 rounded-lg font-semibold text-xs transition-all duration-300 transform hover:scale-110 shadow-lg relative
+                        ${isAisle ? 'mr-1' : ''}
+                        ${ghe.daDat 
+                          ? "bg-red-600 text-white cursor-not-allowed shadow-red-600/50" 
+                          : ""}
+                        ${isSelected && !ghe.daDat
+                          ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-green-500/50 scale-110" 
+                          : ""}
+                        ${!ghe.daDat && !isSelected && isVipSeat
+                          ? "bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white shadow-yellow-500/50" 
+                          : ""}
+                        ${!ghe.daDat && !isSelected && !isVipSeat
+                          ? "bg-gradient-to-r from-blue-400 to-purple-500 hover:from-blue-500 hover:to-purple-600 text-white shadow-blue-500/50" 
+                          : ""}
+                      `}
+                    >
+                      {ghe.tenGhe}
+                      {isVipSeat && !ghe.daDat && (
+                        <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-yellow-300 rounded-full flex items-center justify-center">
+                          <span className="text-xs text-yellow-800 leading-none">★</span>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              {/* Row labels */}
+              <div className="absolute left-0 top-12 h-full flex flex-col justify-start space-y-2 pt-1">
+                {Array.from({length: Math.ceil(danhSachGhe.length / 12)}, (_, i) => (
+                  <div key={i} className="w-6 h-9 flex items-center justify-center text-white/60 text-xs font-medium">
+                    {String.fromCharCode(65 + i)}
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Chú thích */}
-            <div className="flex flex-wrap justify-center gap-6 p-6 bg-white/5 rounded-2xl border border-white/10">
+            <div className="flex flex-wrap mt-10 justify-center gap-6 p-6 bg-white/5 rounded-2xl border border-white/10">
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg shadow-lg"></div>
-                <span className="text-white font-medium">Ghế trống</span>
+                <span className="text-white font-medium">Ghế thường</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg shadow-lg relative">
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-300 rounded-full flex items-center justify-center">
+                    <span className="text-xs text-yellow-800">★</span>
+                  </div>
+                </div>
+                <span className="text-white font-medium">Ghế VIP</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-lg shadow-lg"></div>
                 <span className="text-white font-medium">Đang chọn</span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-6 h-6 bg-red-500/80 rounded-lg shadow-lg"></div>
+                <div className="w-6 h-6 bg-red-600 rounded-lg shadow-lg"></div>
                 <span className="text-white font-medium">Đã đặt</span>
               </div>
             </div>

@@ -8,10 +8,8 @@ import NewsPage from "../pages/HomeTemplate/NewsPage";
 import EditUser from "../pages/AdminTemplate/EditUser";
 import ProtectedRoute from "./ProtectedRoute";
 import { Route } from "react-router-dom";
-
 import AdminTemplate from "../pages/AdminTemplate";
 import AddMovie from '../pages/AdminTemplate/AddMovie';
-import AddUserPage from "../pages/AdminTemplate/AddUserPage";
 import AuthPage from "../pages/AdminTemplate/AuthPage";
 import Dashboard from "../pages/AdminTemplate/Dashboard";
 import MovieManagement from '../pages/AdminTemplate/MovieManagement';
@@ -23,6 +21,9 @@ import UpdateProfileAdmin from "../pages/AdminTemplate/UpdateProfileAdmin";
 import AddUserFromAdmin from "../pages/AdminTemplate/AddUserFromAdmin";
 import BuyTicket from "../pages/HomeTemplate/BuyTicket";
 import TicketManagement from "../pages/HomeTemplate/TickerManagement";
+import UpdateProfileUser from "../pages/HomeTemplate/ProfileUser";
+import EditMovie from "../pages/AdminTemplate/EditMovie";
+
 const routes = [
   {
     path: "",
@@ -63,6 +64,10 @@ const routes = [
       {
         path: "/ticket-management",
         element: <TicketManagement />
+      },
+      {
+        path: "/profile",
+        element: <UpdateProfileUser />
       }
     
     ],
@@ -78,10 +83,6 @@ const routes = [
       {
         path: "dashboard",
         element: <Dashboard />,
-      },
-      {
-        path: "user-management/add-user",
-        element: <AddUserPage />,
       },
       {
         path: "movies-management",
@@ -112,8 +113,12 @@ const routes = [
         element: <UpdateProfileAdmin />
       },
       {
-        path: "users-management/add-user-admin",
+        path: "users-management/add-user",
         element: <AddUserFromAdmin />
+      },
+      {
+        path: "movies-management/edit-movie/:maPhim",
+        element: <EditMovie />
       }
 
     ],

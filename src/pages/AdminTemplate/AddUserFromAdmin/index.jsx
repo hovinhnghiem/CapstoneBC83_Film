@@ -44,7 +44,7 @@ export default function AddUserFromAdmin() {
 
       alert("Thêm người dùng thành công!");
       reset(); // clear form
-      navigate("/admin/user-management"); // chuyển về trang quản lý user
+      navigate(""); // chuyển về trang quản lý user
     } catch (err) {
       console.error("Lỗi thêm user:", err.response?.data || err);
       const errorMessage = err.response?.data?.content || "Lỗi không xác định";
@@ -53,8 +53,8 @@ export default function AddUserFromAdmin() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-4">
+    <div className="max-w-2xl mx-auto bg-white mt-30 shadow-lg rounded-lg p-6">
+      <h1 className="text-2xl font-semibold text-gray-900 mb-4 flex justify-center">
         Thêm người dùng mới
       </h1>
 

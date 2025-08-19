@@ -74,7 +74,7 @@ export default function UserManagement() {
 
       <div className="relative overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="text-xs text-white uppercase bg-gradient-to-r from-blue-600 to-purple-600 shadow">
             <tr>
               <th scope="col" className="px-6 py-3">
                 STT
@@ -102,24 +102,24 @@ export default function UserManagement() {
           </thead>
           <tbody>
             {users.map((user, index) => (
-              <tr key={user.taiKhoan} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900  dark:text-white w-[250px]">
+              <tr key={user.taiKhoan} className="bg-white border  border-gray-300 shadow-2xl">
+                <th scope="row" className="px-6 py-4 font-medium text-gray-900   w-[100px]">
                   {index + 1}
                 </th>
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900  dark:text-white w-[250px]">
+                <th scope="row" className="px-6 py-4 font-medium text-gray-900  w-[250px]">
                   {user.taiKhoan}
                 </th>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-gray-900" >
                   {user.hoTen}
                 </td>
-                <td className="px-6 flex-col justify-center items-start py-4">
+                <td className="px-6 flex-col text-gray-900 justify-center items-start py-4 text-gray-9">
                   <p className='w-[320px] line-clamp-2'>{user.email}</p>
                 </td>
 
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-gray-900">
                   {user.soDT}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-gray-900">
                   {user.maLoaiNguoiDung} {/**? 'QuanTri' : 'KhachHang' */}
                 </td>
                 <td className="px-6 py-4 flex gap-2">
