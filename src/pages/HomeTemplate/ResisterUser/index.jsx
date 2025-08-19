@@ -4,7 +4,6 @@ import z from "zod";
 import api from "../../../services/api";
 import { User, Lock, Mail, Phone, UserPlus } from "lucide-react";
 
-// Schema validate
 const schema = z.object({
   taiKhoan: z.string().nonempty("Vui lòng nhập tài khoản"),
   matKhau: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
@@ -21,7 +20,7 @@ export default function RegisterUser() {
       matKhau: "",
       email: "",
       soDt: "",
-      maNhom: "GP00", // mặc định
+      maNhom: "GP00",
       hoTen: "",
     },
     resolver: zodResolver(schema),

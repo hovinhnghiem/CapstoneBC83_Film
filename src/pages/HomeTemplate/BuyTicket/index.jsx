@@ -32,18 +32,18 @@ export default function BuyTicket() {
         let vipIndex = 0;
         let normalIndex = 0;
         
-        // Định nghĩa khu vực VIP cân đối hơn (trung tâm rạp)
+        // Định nghĩa khu vực VIP
         const vipRows = [
           Math.floor(totalRows * 0.3), // Bắt đầu từ 30% chiều cao rạp
           Math.floor(totalRows * 0.7)  // Kết thúc ở 70% chiều cao rạp
         ];
         
-        // Đặt ghế theo từng hàng để tạo sự cân đối
+        // Đặt ghế theo từng hàng
         for (let row = 0; row < totalRows; row++) {
           for (let col = 0; col < seatsPerRow; col++) {
             // Khu vực VIP: trung tâm theo chiều dọc và ngang
             const isVipRow = row >= vipRows[0] && row <= vipRows[1];
-            const isVipCol = col >= 2 && col <= 9; // Trung tâm theo chiều ngang
+            const isVipCol = col >= 2 && col <= 9;
             const isVipPosition = isVipRow && isVipCol;
             
             if (isVipPosition && vipIndex < vipSeats.length) {

@@ -24,12 +24,12 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Lấy danh sách user
+        // get list user
         const userRes = await api.get("/QuanLyNguoiDung/LayDanhSachNguoiDung?MaNhom=GP00");
         const users = userRes.data.content || [];
         const adminCount = users.filter((u) => u.maLoaiNguoiDung === "QuanTri").length;
 
-        // Lấy danh sách phim
+        // get list film
         const movieRes = await api.get("/QuanLyPhim/LayDanhSachPhim?maNhom=GP02");
         const movies = movieRes.data.content || [];
         const nowShowing = movies.filter((m) => m.dangChieu).length;
@@ -111,7 +111,7 @@ export default function Dashboard() {
         </ol>
       </nav>
 
-      {/* Nút về Home */}
+      {/* Home Button */}
       <div className="flex justify-end">
         <button
           onClick={() => navigate("/")}

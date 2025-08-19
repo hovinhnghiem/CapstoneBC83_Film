@@ -10,7 +10,6 @@ export default function Movie({ movie }) {
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden flex flex-col hover:shadow-lg transition duration-300 group">
-      {/* Ảnh phim với hiệu ứng hover */}
       <div className="relative w-full h-100 overflow-hidden">
         <img
           src={movie.hinhAnh}
@@ -19,14 +18,10 @@ export default function Movie({ movie }) {
         />
       </div>
 
-      {/* Nội dung */}
       <div className="flex flex-col flex-1 p-4">
-        {/* Tên phim */}
         <h5 className="text-lg font-semibold text-gray-900 text-center mb-4 line-clamp-2">
           {movie.tenPhim}
         </h5>
-
-        {/* Nút */}
         <div className="mt-auto flex gap-2">
           <button
             onClick={handleViewDetails}

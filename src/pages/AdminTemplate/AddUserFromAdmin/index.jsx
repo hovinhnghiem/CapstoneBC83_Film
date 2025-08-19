@@ -32,7 +32,7 @@ export default function AddUserFromAdmin() {
   });
 
   const onSubmit = async (values) => {
-    // chỉ admin mới được thêm user
+    // Only admin add user
     if (adminUser?.maLoaiNguoiDung !== "QuanTri") {
       alert("Bạn không có quyền thêm người dùng!");
       return;
@@ -43,8 +43,8 @@ export default function AddUserFromAdmin() {
       await api.post("/QuanLyNguoiDung/ThemNguoiDung", payload);
 
       alert("Thêm người dùng thành công!");
-      reset(); // clear form
-      navigate(""); // chuyển về trang quản lý user
+      reset();
+      navigate("");
     } catch (err) {
       console.error("Lỗi thêm user:", err.response?.data || err);
       const errorMessage = err.response?.data?.content || "Lỗi không xác định";

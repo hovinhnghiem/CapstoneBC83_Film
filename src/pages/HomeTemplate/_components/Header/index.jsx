@@ -9,7 +9,6 @@ export default function Header() {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Load user từ localStorage khi refresh trang
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser && !user) {
@@ -17,18 +16,16 @@ export default function Header() {
     }
   }, [dispatch, user]);
 
-  // Xử lý logout
   const handleLogout = () => {
     localStorage.removeItem("user");
     dispatch(clearUser());
     navigate("/login");
   };
 
-  // Class NavLink tùy active
   const linkClass = ({ isActive }) =>
     isActive
-      ? "text-red-500 font-semibold" // Màu đỏ khi active
-      : "text-white hover:text-red-400"; // Màu trắng khi bình thường
+      ? "text-red-500 font-semibold" 
+      : "text-white hover:text-red-400";
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 border-b bg-gray-900 shadow-2xl">

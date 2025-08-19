@@ -5,9 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import api from "../../../services/api";
 import { useSelector, useDispatch } from "react-redux";
-import { setUser } from "../../../store/auth.slice"; // nếu slice có action setUser để update lại store
+import { setUser } from "../../../store/auth.slice"; 
 
-// Schema validate
+
 const schema = z.object({
   taiKhoan: z.string().nonempty("Vui lòng nhập tài khoản"),
   matKhau: z.string().nonempty("Vui lòng nhập mật khẩu"),
@@ -23,8 +23,6 @@ const schema = z.object({
 export default function UpdateProfileAdmin() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  // Lấy thông tin user từ redux
   const adminUser = useSelector(
     (state) => state.authSlice.user || state.authSlice.content
   );
@@ -37,8 +35,6 @@ export default function UpdateProfileAdmin() {
   } = useForm({
     resolver: zodResolver(schema),
   });
-
-  // Khi load trang -> fill dữ liệu của admin vào form
   useEffect(() => {
     if (adminUser) {
       reset({

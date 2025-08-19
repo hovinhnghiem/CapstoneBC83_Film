@@ -10,8 +10,8 @@ const dispatch = useDispatch();
 
 const handleLogout = () => {
     localStorage.removeItem("user"); // Xóa thông tin user đã lưu
-    dispatch(clearUser()); // Reset Redux state
-    navigate("/login"); // Điều hướng về login
+    dispatch(clearUser()); 
+    navigate("/login");
   };
 
   return (

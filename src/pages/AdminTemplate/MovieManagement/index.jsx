@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from "../../../services/api"
 import { FaEdit, FaTrash, FaEye, FaRegCalendarAlt } from "react-icons/fa";
-import DeleteMovie from "../DeleteMovie"; // Import component xoá
-import SetCalendarFilm from '../SetCalendarFilm';
+import DeleteMovie from "../DeleteMovie";
 export default function MovieManagement() {
   const navigate = useNavigate()
   const [movies, setMovies] = useState([])

@@ -5,8 +5,8 @@
 .slick-slide img {
   width: 100%;
   height: 700px;
-  object-fit: cover; /* Giữ nguyên tỉ lệ ảnh, không cắt */
-  background-color: #000; /* Thêm nền đen để lấp khoảng trống */
+  object-fit: cover; 
+  background-color: #000; 
 }
 
 .slick-prev:before, .slick-next:before {

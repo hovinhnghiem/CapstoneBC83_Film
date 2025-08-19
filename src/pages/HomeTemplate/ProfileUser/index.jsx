@@ -16,12 +16,11 @@ export default function UpdateProfileUser() {
     matKhau: "",
     email: "",
     soDt: "",
-    maNhom: "GP01",
+    maNhom: "GP00",
     maLoaiNguoiDung: "KhachHang",
     hoTen: "",
   });
 
-  // fill thông tin user từ store khi vào trang
   useEffect(() => {
     if (user) {
       setFormData({
@@ -48,7 +47,6 @@ export default function UpdateProfileUser() {
     try {
       const res = await api.put("/QuanLyNguoiDung/CapNhatThongTinNguoiDung", formData);
 
-      // cập nhật store + localStorage
       dispatch(setUser(res.data.content));
       localStorage.setItem("user", JSON.stringify(res.data.content));
 

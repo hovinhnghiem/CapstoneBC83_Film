@@ -22,8 +22,6 @@ const schema = z.object({
 export default function EditUser() {
   const { taiKhoan } = useParams();
   const navigate = useNavigate();
-  
-  // 2. Lấy thông tin người dùng đang đăng nhập từ Redux store
   const { user: adminUser } = useSelector((state) => state.authSlice);
 
   const {

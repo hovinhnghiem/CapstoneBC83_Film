@@ -15,7 +15,6 @@ export default function ProtectedRoute({ children }) {
     // Không phải quản trị → về trang chủ hoặc báo lỗi
     return <Navigate to="/" replace />;
   }
-
   // Nếu pass hết → render nội dung
   return children;
 }

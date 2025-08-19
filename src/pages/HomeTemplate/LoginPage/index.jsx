@@ -16,7 +16,6 @@ export default function LoginPage() {
     matKhau: "",
   });
 
-  // Nếu đã login → tự redirect
   useEffect(() => {
     if (user) {
       if (user.maLoaiNguoiDung === "QuanTri") {
