@@ -29,7 +29,9 @@ export default function EditMovie() {
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        const res = await api.get(`/QuanLyPhim/LayThongTinPhim?MaPhim=${maPhim}`);
+        const res = await api.get(
+          `/QuanLyPhim/LayThongTinPhim?MaPhim=${maPhim}`
+        );
         const movie = res.data.content;
 
         // set giá trị form
@@ -59,8 +61,14 @@ export default function EditMovie() {
       formData.append("danhGia", values.danhGia);
       formData.append("maNhom", "GP01");
 
+      // Nếu có file mới thì đổi tên để server nhận ảnh mới
       if (values.hinhAnh?.[0]) {
-        formData.append("File", values.hinhAnh[0]);
+        const file = values.hinhAnh[0];
+        const ext = file.name.split(".").pop();
+        const newFileName = `${values.tenPhim.replace(/\s+/g, "-")}-${Date.now()}.${ext}`;
+        const renamedFile = new File([file], newFileName, { type: file.type });
+
+        formData.append("File", renamedFile);
       }
 
       await api.post("/QuanLyPhim/CapNhatPhimUpload", formData);
@@ -90,7 +98,9 @@ export default function EditMovie() {
               {...register("tenPhim")}
               className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
-            {errors.tenPhim && <p className="text-red-500 text-sm">{errors.tenPhim.message}</p>}
+            {errors.tenPhim && (
+              <p className="text-red-500 text-sm">{errors.tenPhim.message}</p>
+            )}
           </div>
 
           {/* Trailer */}
@@ -103,7 +113,9 @@ export default function EditMovie() {
               {...register("trailer")}
               className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
-            {errors.trailer && <p className="text-red-500 text-sm">{errors.trailer.message}</p>}
+            {errors.trailer && (
+              <p className="text-red-500 text-sm">{errors.trailer.message}</p>
+            )}
           </div>
 
           {/* Mô tả */}
@@ -116,7 +128,9 @@ export default function EditMovie() {
               {...register("moTa")}
               className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
-            {errors.moTa && <p className="text-red-500 text-sm">{errors.moTa.message}</p>}
+            {errors.moTa && (
+              <p className="text-red-500 text-sm">{errors.moTa.message}</p>
+            )}
           </div>
 
           {/* Ngày khởi chiếu */}
@@ -129,7 +143,11 @@ export default function EditMovie() {
               {...register("ngayKhoiChieu")}
               className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
-            {errors.ngayKhoiChieu && <p className="text-red-500 text-sm">{errors.ngayKhoiChieu.message}</p>}
+            {errors.ngayKhoiChieu && (
+              <p className="text-red-500 text-sm">
+                {errors.ngayKhoiChieu.message}
+              </p>
+            )}
           </div>
 
           {/* Đánh giá */}
@@ -144,7 +162,9 @@ export default function EditMovie() {
               {...register("danhGia")}
               className="w-full mt-1 p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
-            {errors.danhGia && <p className="text-red-500 text-sm">{errors.danhGia.message}</p>}
+            {errors.danhGia && (
+              <p className="text-red-500 text-sm">{errors.danhGia.message}</p>
+            )}
           </div>
 
           {/* Hình ảnh */}

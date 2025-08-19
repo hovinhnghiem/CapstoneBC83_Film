@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../../services/api';
 
 export default function AddMovie() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     tenPhim: "",
     trailer: "",
@@ -22,8 +26,7 @@ export default function AddMovie() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-    
-    // Clear error when user starts typing
+
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -42,156 +45,126 @@ export default function AddMovie() {
 
   const validateForm = () => {
     const newErrors = {};
-    
     if (!formData.tenPhim.trim()) newErrors.tenPhim = "Vui lòng nhập tên phim";
     if (!formData.trailer.trim()) newErrors.trailer = "Vui lòng nhập trailer";
     if (!formData.moTa.trim()) newErrors.moTa = "Vui lòng nhập mô tả";
     if (formData.moTa.length > 200) newErrors.moTa = "Không vượt quá 200 ký tự";
     if (!formData.ngayKhoiChieu) newErrors.ngayKhoiChieu = "Vui lòng chọn ngày";
-    if (!formData.danhGia.trim()) newErrors.danhGia = "Vui lòng nhập đánh giá";
+    if (!formData.danhGia.toString().trim()) newErrors.danhGia = "Vui lòng nhập đánh giá";
     if (!/^([0-9]|10)$/.test(formData.danhGia)) newErrors.danhGia = "Vui lòng nhập từ 0 đến 10";
     if (!formData.hinhAnh) newErrors.hinhAnh = "Vui lòng chọn hình ảnh";
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // format date yyyy-MM-dd -> dd/MM/yyyy
+  const formatDate = (dateStr) => {
+    const [year, month, day] = dateStr.split("-");
+    return `${day}/${month}/${year}`;
+  };
+
   const onSubmit = async () => {
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      alert("Thêm phim thành công!");
-      setIsSubmitting(false);
-      // Reset form
-      setFormData({
-        tenPhim: "",
-        trailer: "",
-        moTa: "",
-        maNhom: "GP01",
-        ngayKhoiChieu: "",
-        trangThai: "false",
-        Hot: false,
-        danhGia: "",
-        hinhAnh: null
+
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append("tenPhim", formData.tenPhim);
+      formDataUpload.append("trailer", formData.trailer);
+      formDataUpload.append("moTa", formData.moTa);
+      formDataUpload.append("maNhom", formData.maNhom);
+      formDataUpload.append("ngayKhoiChieu", formatDate(formData.ngayKhoiChieu));
+      formDataUpload.append("dangChieu", formData.trangThai === "true");
+      formDataUpload.append("sapChieu", formData.trangThai === "false");
+      formDataUpload.append("hot", formData.Hot);
+      formDataUpload.append("danhGia", formData.danhGia);
+      formDataUpload.append("File", formData.hinhAnh);
+
+      await api.post("/QuanLyPhim/ThemPhimUploadHinh", formDataUpload, {
+        headers: { "Content-Type": "multipart/form-data" }
       });
-    }, 2000);
+
+      alert("🎉 Thêm phim thành công!");
+      navigate("/admin/movies-management"); // 👉 quay lại trang quản lý phim
+    } catch (err) {
+      console.error("❌ Lỗi thêm phim:", err.response?.data || err.message);
+      alert(err.response?.data?.content || "❌ Thêm phim thất bại!");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            🎬 Thêm Phim Mới
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">🎬 Thêm Phim Mới</h1>
           <p className="text-gray-600">Tạo nội dung phim hấp dẫn cho khán giả</p>
         </div>
 
-        {/* Main Form Card */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6">
             <h2 className="text-2xl font-semibold text-white flex items-center">
-              <span className="mr-3">📝</span>
-              Thông tin chi tiết phim
+              <span className="mr-3">📝</span> Thông tin chi tiết phim
             </h2>
           </div>
 
           <div className="p-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              
               {/* Left Column */}
               <div className="space-y-6">
-                
-                {/* Movie Name */}
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
-                    <span className="mr-2">🎭</span>
-                    Tên phim
-                  </label>
+                {/* Tên phim */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2">🎭 Tên phim</label>
                   <input
                     type="text"
                     name="tenPhim"
                     value={formData.tenPhim}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-100 ${
-                      errors.tenPhim ? 'border-red-400 bg-red-50' : 'border-gray-200 focus:border-blue-400'
-                    }`}
-                    placeholder="Nhập tên phim..."
+                    className="w-full px-4 py-3 border rounded-lg"
                   />
-                  {errors.tenPhim && <p className="text-red-500 text-sm mt-1 flex items-center"><span className="mr-1">⚠️</span>{errors.tenPhim}</p>}
+                  {errors.tenPhim && <p className="text-red-500 text-sm">{errors.tenPhim}</p>}
                 </div>
-
                 {/* Trailer */}
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
-                    <span className="mr-2">🎥</span>
-                    Trailer URL
-                  </label>
+                <div>
+                  <label className="block text-sm font-semibold mb-2">🎥 Trailer</label>
                   <input
                     type="url"
                     name="trailer"
                     value={formData.trailer}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-100 ${
-                      errors.trailer ? 'border-red-400 bg-red-50' : 'border-gray-200 focus:border-blue-400'
-                    }`}
-                    placeholder="https://youtube.com/watch?v=..."
+                    className="w-full px-4 py-3 border rounded-lg"
                   />
-                  {errors.trailer && <p className="text-red-500 text-sm mt-1 flex items-center"><span className="mr-1">⚠️</span>{errors.trailer}</p>}
+                  {errors.trailer && <p className="text-red-500 text-sm">{errors.trailer}</p>}
                 </div>
-
-                {/* Description */}
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
-                    <span className="mr-2">📄</span>
-                    Mô tả phim
-                  </label>
+                {/* Mô tả */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2">📄 Mô tả</label>
                   <textarea
                     name="moTa"
                     value={formData.moTa}
                     onChange={handleInputChange}
                     rows="4"
-                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-100 resize-none ${
-                      errors.moTa ? 'border-red-400 bg-red-50' : 'border-gray-200 focus:border-blue-400'
-                    }`}
-                    placeholder="Mô tả nội dung phim..."
+                    className="w-full px-4 py-3 border rounded-lg"
                   />
-                  <div className="flex justify-between items-center mt-1">
-                    {errors.moTa && <p className="text-red-500 text-sm flex items-center"><span className="mr-1">⚠️</span>{errors.moTa}</p>}
-                    <span className={`text-sm ml-auto ${formData.moTa.length > 180 ? 'text-red-500' : 'text-gray-400'}`}>
-                      {formData.moTa.length}/200
-                    </span>
-                  </div>
+                  {errors.moTa && <p className="text-red-500 text-sm">{errors.moTa}</p>}
                 </div>
-
-                {/* Release Date & Rating */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
-                      <span className="mr-2">📅</span>
-                      Ngày khởi chiếu
-                    </label>
+                {/* Ngày & Đánh giá */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">📅 Ngày khởi chiếu</label>
                     <input
                       type="date"
                       name="ngayKhoiChieu"
                       value={formData.ngayKhoiChieu}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-100 cursor-pointer ${
-                        errors.ngayKhoiChieu ? 'border-red-400 bg-red-50' : 'border-gray-200 focus:border-blue-400'
-                      }`}
+                      className="w-full px-4 py-3 border rounded-lg"
                     />
-                    {errors.ngayKhoiChieu && <p className="text-red-500 text-sm mt-1 flex items-center"><span className="mr-1">⚠️</span>{errors.ngayKhoiChieu}</p>}
+                    {errors.ngayKhoiChieu && <p className="text-red-500 text-sm">{errors.ngayKhoiChieu}</p>}
                   </div>
-
-                  <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
-                      <span className="mr-2">⭐</span>
-                      Đánh giá (0-10)
-                    </label>
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">⭐ Đánh giá</label>
                     <input
                       type="number"
                       min="0"
@@ -199,154 +172,63 @@ export default function AddMovie() {
                       name="danhGia"
                       value={formData.danhGia}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-100 ${
-                        errors.danhGia ? 'border-red-400 bg-red-50' : 'border-gray-200 focus:border-blue-400'
-                      }`}
-                      placeholder="8.5"
+                      className="w-full px-4 py-3 border rounded-lg"
                     />
-                    {errors.danhGia && <p className="text-red-500 text-sm mt-1 flex items-center"><span className="mr-1">⚠️</span>{errors.danhGia}</p>}
+                    {errors.danhGia && <p className="text-red-500 text-sm">{errors.danhGia}</p>}
                   </div>
                 </div>
               </div>
 
               {/* Right Column */}
               <div className="space-y-6">
-                
-                {/* Image Upload */}
-                <div className="group">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
-                    <span className="mr-2">🖼️</span>
-                    Poster phim
-                  </label>
-                  
+                {/* Poster */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2">🖼️ Poster</label>
                   {!formData.hinhAnh ? (
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept=".png,.jpeg,.jpg"
-                        onChange={handleFileChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                      <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 hover:border-blue-400 hover:bg-blue-50 cursor-pointer ${
-                        errors.hinhAnh ? 'border-red-400 bg-red-50' : 'border-gray-300'
-                      }`}>
-                        <div className="text-6xl mb-4">📤</div>
-                        <p className="text-lg font-semibold text-gray-700 mb-2">Tải lên poster</p>
-                        <p className="text-gray-500">PNG, JPG hoặc JPEG</p>
-                      </div>
-                    </div>
+                    <input type="file" accept="image/*" onChange={handleFileChange} />
                   ) : (
                     <div className="relative">
-                      <img 
-                        src={previewImage(formData.hinhAnh)} 
-                        alt="Preview" 
-                        className="w-full h-80 object-cover rounded-xl shadow-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={removeImage}
-                        className="absolute top-3 right-3 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors cursor-pointer shadow-lg"
-                      >
-                        🗑️
+                      <img src={previewImage(formData.hinhAnh)} alt="Preview" className="rounded-lg" />
+                      <button type="button" onClick={removeImage} className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-lg">
+                        X
                       </button>
                     </div>
                   )}
-                  {errors.hinhAnh && <p className="text-red-500 text-sm mt-1 flex items-center"><span className="mr-1">⚠️</span>{errors.hinhAnh}</p>}
+                  {errors.hinhAnh && <p className="text-red-500 text-sm">{errors.hinhAnh}</p>}
                 </div>
-
-                {/* Status Options */}
-                <div className="space-y-4">
-                  <div className="group">
-                    <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
-                      <span className="mr-2">🎪</span>
-                      Trạng thái chiếu
+                {/* Trạng thái */}
+                <div>
+                  <label className="block text-sm font-semibold mb-2">🎪 Trạng thái chiếu</label>
+                  <div className="flex gap-4">
+                    <label>
+                      <input type="radio" name="trangThai" value="true" checked={formData.trangThai === "true"} onChange={handleInputChange} /> Đang chiếu
                     </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <label className={`flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
-                        formData.trangThai === "true" ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-200 hover:border-green-300'
-                      }`}>
-                        <input
-                          type="radio"
-                          name="trangThai"
-                          value="true"
-                          checked={formData.trangThai === "true"}
-                          onChange={handleInputChange}
-                          className="mr-3 cursor-pointer"
-                        />
-                        <span className="font-semibold">🟢 Đang chiếu</span>
-                      </label>
-                      <label className={`flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
-                        formData.trangThai === "false" ? 'border-yellow-500 bg-yellow-50 text-yellow-700' : 'border-gray-200 hover:border-yellow-300'
-                      }`}>
-                        <input
-                          type="radio"
-                          name="trangThai"
-                          value="false"
-                          checked={formData.trangThai === "false"}
-                          onChange={handleInputChange}
-                          className="mr-3 cursor-pointer"
-                        />
-                        <span className="font-semibold">🟡 Sắp chiếu</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Hot Movie Toggle */}
-                  <div className="group">
-                    <label className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
-                      formData.Hot ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-red-300'
-                    }`}>
-                      <input
-                        type="checkbox"
-                        name="Hot"
-                        checked={formData.Hot}
-                        onChange={handleInputChange}
-                        className="mr-3 w-5 h-5 cursor-pointer"
-                      />
-                      <span className="flex items-center">
-                        <span className="text-2xl mr-2">🔥</span>
-                        <span className="font-semibold text-gray-700">Phim Hot</span>
-                      </span>
+                    <label>
+                      <input type="radio" name="trangThai" value="false" checked={formData.trangThai === "false"} onChange={handleInputChange} /> Sắp chiếu
                     </label>
                   </div>
+                </div>
+                {/* Hot */}
+                <div>
+                  <label className="flex items-center">
+                    <input type="checkbox" name="Hot" checked={formData.Hot} onChange={handleInputChange} className="mr-2" /> 🔥 Phim Hot
+                  </label>
                 </div>
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="mt-8 pt-6 border-t border-gray-200">
+            {/* Submit */}
+            <div className="mt-8">
               <button
                 type="button"
                 onClick={onSubmit}
                 disabled={isSubmitting}
-                className={`w-full py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-200 cursor-pointer ${
-                  isSubmitting 
-                    ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
-                    : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-xl transform hover:-translate-y-1'
-                }`}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold"
               >
-                {isSubmitting ? (
-                  <span className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
-                    Đang xử lý...
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center">
-                    <span className="mr-2">✨</span>
-                    Tạo phim mới
-                  </span>
-                )}
+                {isSubmitting ? "Đang xử lý..." : "✨ Tạo phim mới"}
               </button>
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="text-center mt-8 text-gray-500">
-          <p className="flex items-center justify-center">
-            <span className="mr-2">💡</span>
-            Hãy đảm bảo tất cả thông tin đều chính xác trước khi submit
-          </p>
         </div>
       </div>
     </div>
