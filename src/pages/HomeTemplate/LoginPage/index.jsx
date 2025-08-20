@@ -74,11 +74,11 @@ export default function LoginPage() {
           onChange={handleOnChange}
           value={values.matKhau}
         />
-        <div className="flex justify-end">
+        <div className="flex justify-center">
           <button
             type="submit"
             disabled={isPending}
-            className="p-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-60"
+            className="p-3 px-10 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-60"
           >
             {isPending ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>

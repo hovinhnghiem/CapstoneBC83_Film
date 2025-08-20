@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../services/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { Film, Calendar, Star, Image, Link, FileText } from "lucide-react";
+import { Film, Calendar, Star, Image, Link, FileText, Trash2 } from "lucide-react";
 
 // Schema validate
 const schema = z.object({
@@ -18,12 +18,36 @@ const schema = z.object({
 export default function EditMovie() {
   const { maPhim } = useParams();
   const navigate = useNavigate();
-  const [previewImage, setPreviewImage] = useState(null);
+
+  const [formData, setFormData] = useState({
+    tenPhim: "",
+    trailer: "",
+    moTa: "",
+    ngayKhoiChieu: "",
+    danhGia: "",
+    hinhAnh: null, // file ảnh mới
+    oldImage: "",  // ảnh cũ từ server
+  });
 
   const { register, handleSubmit, setValue, formState } = useForm({
     resolver: zodResolver(schema),
   });
   const { errors } = formState;
+
+  // Xem trước ảnh
+  const previewImage = (file) =>
+    file ? URL.createObjectURL(file) : formData.oldImage;
+
+  // Chọn file ảnh
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prev) => ({ ...prev, hinhAnh: file }));
+  };
+
+  // Xóa ảnh
+  const removeImage = () => {
+    setFormData((prev) => ({ ...prev, hinhAnh: null, oldImage: "" }));
+  };
 
   // Lấy thông tin phim cũ
   useEffect(() => {
@@ -40,7 +64,16 @@ export default function EditMovie() {
         setValue("moTa", movie.moTa);
         setValue("ngayKhoiChieu", movie.ngayKhoiChieu.slice(0, 10));
         setValue("danhGia", movie.danhGia);
-        setPreviewImage(movie.hinhAnh);
+
+        setFormData((prev) => ({
+          ...prev,
+          tenPhim: movie.tenPhim,
+          trailer: movie.trailer,
+          moTa: movie.moTa,
+          ngayKhoiChieu: movie.ngayKhoiChieu.slice(0, 10),
+          danhGia: movie.danhGia,
+          oldImage: movie.hinhAnh,
+        }));
       } catch (err) {
         console.error(err);
         alert("Không tải được thông tin phim");
@@ -52,26 +85,21 @@ export default function EditMovie() {
   // Submit
   const onSubmit = async (values) => {
     try {
-      const formData = new FormData();
-      formData.append("maPhim", maPhim);
-      formData.append("tenPhim", values.tenPhim);
-      formData.append("trailer", values.trailer);
-      formData.append("moTa", values.moTa);
-      formData.append("ngayKhoiChieu", values.ngayKhoiChieu);
-      formData.append("danhGia", values.danhGia);
-      formData.append("maNhom", "GP01");
+      const submitData = new FormData();
+      submitData.append("maPhim", maPhim);
+      submitData.append("tenPhim", values.tenPhim);
+      submitData.append("trailer", values.trailer);
+      submitData.append("moTa", values.moTa);
+      submitData.append("ngayKhoiChieu", values.ngayKhoiChieu);
+      submitData.append("danhGia", values.danhGia);
+      submitData.append("maNhom", "GP01");
 
-      // Nếu có file mới thì đổi tên để server nhận ảnh mới
-      if (values.hinhAnh?.[0]) {
-        const file = values.hinhAnh[0];
-        const ext = file.name.split(".").pop();
-        const newFileName = `${values.tenPhim.replace(/\s+/g, "-")}-${Date.now()}.${ext}`;
-        const renamedFile = new File([file], newFileName, { type: file.type });
-
-        formData.append("File", renamedFile);
+      // Nếu có file ảnh mới thì upload
+      if (formData.hinhAnh) {
+        submitData.append("File", formData.hinhAnh);
       }
 
-      await api.post("/QuanLyPhim/CapNhatPhimUpload", formData);
+      await api.post("/QuanLyPhim/CapNhatPhimUpload", submitData);
       alert("Cập nhật phim thành công!");
       navigate("/admin/movies-management");
     } catch (err) {
@@ -172,23 +200,28 @@ export default function EditMovie() {
             <label className="block text-sm font-medium text-gray-700 flex items-center gap-2">
               <Image className="w-4 h-4" /> Hình ảnh
             </label>
-            <input
-              type="file"
-              accept="image/*"
-              {...register("hinhAnh")}
-              className="mt-1 block w-full text-sm text-gray-500"
-              onChange={(e) => {
-                if (e.target.files[0]) {
-                  setPreviewImage(URL.createObjectURL(e.target.files[0]));
-                }
-              }}
-            />
-            {previewImage && (
-              <img
-                src={previewImage}
-                alt="preview"
-                className="mt-3 w-40 rounded-lg shadow"
+            {!formData.hinhAnh && !formData.oldImage ? (
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="mt-1 block w-full text-sm text-gray-500"
               />
+            ) : (
+              <div className="relative w-fit">
+                <img
+                  src={previewImage(formData.hinhAnh)}
+                  alt="preview"
+                  className="mt-3 w-40 rounded-lg shadow"
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full p-2 hover:bg-red-600"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             )}
           </div>
 
