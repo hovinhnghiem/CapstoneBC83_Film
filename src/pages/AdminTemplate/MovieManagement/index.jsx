@@ -83,10 +83,10 @@ export default function MovieManagement() {
                 <td className="px-6 py-4">
                   <img src={movie.hinhAnh} alt={movie.tenPhim} className="w-24 h-32 object-cover" />
                 </td>
-                <td className="px-6 py-4 w-[320px] line-clamp-2">{movie.moTa}</td>
-                <td className="px-6 py-4">{format(movie.ngayKhoiChieu, 'dd/MM/yyyy')}</td>
-                <td className="px-6 py-4">{movie.sapChieu ? 'Coming soon' : 'Now showing'}</td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-gray-900 w-[320px] line-clamp-2">{movie.moTa}</td>
+                <td className="px-6 text-gray-900 py-4">{format(movie.ngayKhoiChieu, 'dd/MM/yyyy')}</td>
+                <td className="px-6 text-gray-900 py-4">{movie.sapChieu ? 'Coming soon' : 'Now showing'}</td>
+                <td className="px-6 text-gray-900 py-4">
                   <div className="flex items-center justify-center space-x-3">
                     <button
                       onClick={() => navigate(`/admin/movies-management/edit-movie/${movie.maPhim}`)}
